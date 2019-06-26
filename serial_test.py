@@ -195,6 +195,16 @@ test_strings = [
 ]
 
 
+def _roundtrip_sender(layer2):
+    sidx = 0
+    while True:
+        # print("Sending :: {0}".format(test_strings[sidx].encode()))
+        layer2.write(test_strings[sidx].encode())
+        sidx += 1
+        if sidx == len(test_strings):
+            sidx = 0
+
+
 def begin_roundtrip_test(layer2, cmd):
     global recieved_bytes
     global error_bytes
@@ -203,21 +213,23 @@ def begin_roundtrip_test(layer2, cmd):
     print("Waiting for Sync")
     while not sync:
         char = layer2.read().decode('ascii')
+        # print("Got {0}".format(char))
         if char == cmd:
             sync = 1
             print("Synced")
     global next_update
     next_update = time.time()
     update_status()
+    sending_thread = threading.Thread(target=_roundtrip_sender, args=(layer2,), daemon=True)
+    sending_thread.start()
     sidx = 0
     while 1:
-        layer2.write(test_strings[sidx].encode())
         rstr = layer2.read(len(test_strings[sidx])).decode()
+        # print("Got     :: {0}".format(rstr))
         if rstr != test_strings[sidx]:
-            print("ERROR :: ")
-            print(rstr)
-            print(test_strings[sidx])
+            print("ERROR :: {0} : {1}".format(rstr, test_strings[sidx]))
             error_bytes += len(rstr)
+            break
         recieved_bytes += len(rstr)
         sidx += 1
         if sidx == len(test_strings):
