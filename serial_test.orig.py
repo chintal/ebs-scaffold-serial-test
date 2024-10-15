@@ -59,7 +59,7 @@ def dump_status():
         byer = 1.00 * total_error_bytes / total_recieved_bytes
     else:
         byer = 0.00
-
+ 
     print('{0}::{1} bytes/sec :: BYER :{2} :: Total :{3} :: Errors :{4}' \
           ''.format(datetime.datetime.now(), throughput, byer,
                     total_recieved_bytes, total_error_bytes)
@@ -254,7 +254,7 @@ def begin_roundtrip_test(layer2, cmd):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('-p', '--port', default='/dev/ttyACM1',
+    parser.add_argument('-p', '--port', default='/dev/ttyACM0',
                         help="Serial Port",)
     parser.add_argument('-b', '--baudrate', default=256000, type=int,
                         help="Baud Rate. Not applicable to USB CDC links")

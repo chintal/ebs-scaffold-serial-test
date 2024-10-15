@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ebs-test-serial"
+version = "0.1.0"
+description = "Serial Communications Testing for EBS Components"
+authors = [{ name = "Chintalagiri Shashank", email = "shashank.chintalagiri@gmail.com" }]
+dependencies = ['pyserial']
+
+[project.scripts]
+serial-test = "ebs.tests.serial.serial_test:main"  # This defines the script entry point
+
+[tool.setuptools.packages.find]
+where = ["src"]
