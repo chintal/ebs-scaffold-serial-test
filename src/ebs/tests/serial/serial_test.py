@@ -17,9 +17,8 @@ def run_throughput_test(url, baudrate=1000000, length=1000000, timeout=10):
 
 
 def main():
-    run_throughput_test("/dev/ttyACM0", 115200)
+    run_throughput_test("/dev/ttyACM0", 230400)
 
 
 if __name__ == "__main__": 
     main()
-   
