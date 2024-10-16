@@ -1,11 +1,8 @@
+import click
 import serial
 import threading
 import collections
-import logging
 from time import sleep
-
-logger = logging.getLogger("serialport")
-
 
 class SerialDriver:
     def __init__(self, url="/dev/ttyACM0", baudrate=1000000, buffer_size=1024 * 1024, timeout=1000):
@@ -46,6 +43,9 @@ class SerialDriver:
         self.logger_thread = threading.Thread(target=self._log_transfer_rates)
 
         self.ser.open()
+        sleep(1)
+        self.ser.flush()
+        self.ser.read_all()
 
         self.read_thread.start()
         self.write_thread.start()
@@ -86,16 +86,16 @@ class SerialDriver:
             self.bytes_received_total += self.bytes_received
             self.bytes_transmitted_total += self.bytes_transmitted
             
-            received_rate = self.bytes_received * 8 / (1024 * 1024)
-            transmitted_rate = self.bytes_transmitted * 8 / (1024 * 1024)
+            received_rate = self.bytes_received
+            transmitted_rate = self.bytes_transmitted 
             
             if received_rate > self.rate_rx_max:
-                self.rate_rx_max = received_rate
+                self.rate_rx_max = received_rate 
 
             if transmitted_rate > self.rate_tx_max:
                 self.rate_tx_max = transmitted_rate
 
-            logger.info(f"{self.ser.port} XFER - Rx: {received_rate:0.2f} Mbit/s, Tx: {transmitted_rate:0.2f} Mbit/s, RxT: {self.bytes_received_total}")
+            click.secho(f"{self.ser.port} XFER - Rx: {(received_rate / (1024 * 1024)):0.3f} Mbytes/s, Tx: {(transmitted_rate / (1024 * 1024)):0.3f} Mbytes/s, RxT: {self.bytes_received_total}", fg="bright_black")
 
             # Reset counters
             self.bytes_received = 0
@@ -126,6 +126,7 @@ class SerialDriver:
         self.write_thread.join()
         self.logger_thread.join()
         self.ser.close()
+        self.flush()
 
     def flush(self):
         """Clear both the read and write buffers"""

@@ -1,20 +1,18 @@
 
-
-import logging
+import click
 from .drivers.serialport import SerialDriver
 from .tests.throughput import ThroughputTest
 
-logging.basicConfig(level=logging.INFO)
 
-
-def run_throughput_test(url, baudrate=1000000, timeout=10):
+def run_throughput_test(url, baudrate=1000000, length=1000000, timeout=10):
+    click.secho(f"STARTING SERIAL THROUGHPUT TEST", bold=True)
+    click.secho(f"   {url}\t{baudrate}\t{length} bytes")
     with SerialDriver(url=url, baudrate=baudrate, timeout=timeout) as link:
-        test = ThroughputTest(link)   
+        test = ThroughputTest(link, length)   
         try:
             result = test.run_test()
         except: 
             result = None
-    logging.info(f"Throughput Test Result: {result}")
     return result
 
 
@@ -23,6 +21,5 @@ def main():
 
 
 if __name__ == "__main__": 
-    logging.basicConfig(level=logging.INFO)
     main()
    

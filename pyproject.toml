@@ -7,7 +7,7 @@ name = "ebs-test-serial"
 version = "0.1.0"
 description = "Serial Communications Testing for EBS Components"
 authors = [{ name = "Chintalagiri Shashank", email = "shashank.chintalagiri@gmail.com" }]
-dependencies = ['pyserial']
+dependencies = ['pyserial', 'click']
 
 [project.scripts]
 serial-test = "ebs.tests.serial.serial_test:main"  # This defines the script entry point
